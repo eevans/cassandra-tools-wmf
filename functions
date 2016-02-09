@@ -1,0 +1,62 @@
+
+# -*- mode: sh; -*-
+
+# If we're running from an uninstalled working-copy, then use the working-copy
+# version of uyaml, otherwise assume it is in PATH.
+if [ -x "`dirname $0`/uyaml" ]; then
+    UYAML="`dirname $0`/uyaml"
+else
+    UYAML=uyaml
+fi
+
+# Fetch arbitrary instance attributes by instance name.
+get_instance_attribute() {
+    for f in /etc/cassandra-instances.d/*; do
+	    if test `$UYAML $f /name` = "$1"; then
+	        $UYAML $f "$2"
+	        break
+	    fi
+    done
+}
+
+listen_hostname() {
+    get_instance_attribute "$1" /listen_address
+}
+
+jmx_port() {
+    get_instance_attribute "$1" /jmx_port
+}
+
+config_directory() {
+    get_instance_attribute "$1" /config_directory
+}
+
+cassandra_yaml() {
+    echo "`config_directory $1`/cassandra.yaml"
+}
+
+cassandra_env_sh() {
+    echo "`config_directory $1`/cassandra-env.sh"
+}
+
+instances() {
+    for f in /etc/cassandra-instances.d/*; do
+	$UYAML $f /name
+    done
+}
+
+instance_exists() {
+    for instance in `instances`; do
+        if test "$instance" = "$1"; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+assert_instance_exists() {
+    if ! instance_exists "$1"; then
+        echo "\"$1\" does not exist!" >&2
+        exit 1
+    fi
+}
