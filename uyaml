@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+"""
+A YAML parser for the shell.
+"""
+
+import argparse
+import sys
+
+try:
+    import yaml
+except ImportError:
+    sys.stderr.write("PyYAML module missing (http://pyyaml.org)!")
+    sys.exit(1)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="YAML parser")
+    parser.add_argument("yaml", nargs=1, help="YAML file to parse")
+    parser.add_argument("path", nargs=1, help="Path to parse from file")
+    args = parser.parse_args(sys.argv[1:])
+    path = args.path[0].strip('/').split('/')
+    return (args.yaml[0], path)
+
+def serialize(obj):
+    if isinstance(obj, list):
+        return " ".join(obj)
+    else:
+        return obj
+
+def main():
+    (yfile, ypath) = parse_args()
+    with open(yfile) as f:
+        data = yaml.load(f)
+        obj = data
+        for path in ypath:
+            obj = obj[path]
+        print serialize(obj)
+
+
+if __name__ == '__main__':
+    main()

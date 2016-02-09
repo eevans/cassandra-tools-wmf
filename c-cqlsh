@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+# If we're running from an uninstalled working-copy, then use the working-copy
+# version of the shell include, otherwise assume it is installed.
+if [ -r `dirname $0`/functions ]; then
+    . `dirname $0`/functions
+else
+    . /usr/share/cassandra-tools-wmf/functions
+fi
+
+ID="$1"
+assert_instance_exists "$ID"
+shift 1
+
+sudo cqlsh --cqlshrc="`config_directory $ID`"/cqlshrc `listen_hostname $ID` "$@"

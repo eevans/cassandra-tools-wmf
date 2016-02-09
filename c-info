@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+# If we're running from an uninstalled working-copy, then use the working-copy
+# version of the shell include, otherwise assume it is installed.
+if [ -r `dirname $0`/functions ]; then
+    . `dirname $0`/functions
+else
+    . /usr/share/cassandra-tools-wmf/functions
+fi
+
+
+echo "id,listen_address,jmx_port"
+
+for i in `instances`; do
+    printf "%s,%s,%d\n" "$i" `listen_hostname $i` `jmx_port $i`
+done
