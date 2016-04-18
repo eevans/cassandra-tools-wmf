@@ -1,0 +1,22 @@
+Source: cassandra-tools-wmf
+Section: misc
+Priority: optional
+Maintainer: Eric Evans <eevans@wikimedia.org>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://wikitech.wikimedia.org/wiki/Cassandra/Tools
+Vcs-Git: ssh://eevans@gerrit.wikimedia.org:29418/operations/software/cassandra-tools-wmf
+Vcs-Browser: https://github.com/wikimedia/operations-software-cassandra-tools-wmf
+
+Package: cassandra-tools-wmf
+Architecture: all
+Depends: ${misc:Depends}
+Description: add-ons to make Wikimedia Cassandra operations easier
+ Contains the following:
+ .
+   - c-ls: lists local Cassandra instance names
+   - c-foreach-nt: wrapper for nodetool; Sequentially executes nodetool for
+     each local Cassandra instance.
+   - c-cqlsh: given an instance name, connects to Cassandra using cqlsh,
+     (utilizing any configuration in /etc/cassandra-{instance}/cqlshrc)
+   - uyaml: helper for reading yaml files from shell
