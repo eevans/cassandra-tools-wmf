@@ -1,9 +1,9 @@
 
-VERSION=1.0.0
-NAME=cassandra-tools-wmf
+VERSION = 1.0.0
+NAME    = cassandra-tools-wmf
 
-PREFIX ?= /usr
-BINDIR ?= $(DESTDIR)/$(PREFIX)/bin
+PREFIX   ?= /usr
+BINDIR   ?= $(DESTDIR)/$(PREFIX)/bin
 SHAREDIR ?= $(DESTDIR)/$(PREFIX)/share/$(NAME)
 
 all:
