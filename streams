@@ -1,0 +1,149 @@
+#!/usr/bin/python
+
+
+import argparse
+import collections
+import re
+import socket
+import subprocess
+import sys
+import time
+
+
+TABLE_FMT = "%-2s %-26s %-11s %-10s %-8s %-11s %-5s\n"
+
+
+def bold(s):
+    return u'\033[1m%s\033[0m' % s
+
+
+def write(s):
+    sys.stdout.write(s)
+    sys.stdout.flush()
+
+
+def clear():
+    """Clear screen, return cursor to top left"""
+    sys.stdout.write('\033[2J')
+    sys.stdout.write('\033[H')
+    sys.stdout.flush()
+
+
+def header():
+    write(bold(TABLE_FMT % ("", "Peer", "Total", "Remaining", "", "Rate", "ETA")))
+
+
+def paint(transfer):
+    write(TABLE_FMT % transfer)
+
+
+def resolve(address):
+    try:
+        return socket.gethostbyaddr(address)[0]
+    except:
+        return address
+
+
+def sizeof_format(num, suffix='B'):
+    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
+        if abs(num) < 1024.0:
+            return "%.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)
+
+
+def seconds_format(num):
+    if num > 86400:
+        return "%.2fd" % (num / 60. / 60. / 24.)
+    if num > 3600:
+        return "%.2fh" % (num / 60. / 60.)
+    if num > 60:
+        return "%.2fm" % (num / 60.)
+
+
+def percent_format(num):
+    return "%.2f%%" % (num * 100)
+
+
+def netstats(nodetool):
+    peer_re = re.compile(
+        r"[\s]+/([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})")
+    xfer_re = re.compile(
+        r"[\s]+(Sending|Receiving) [\d]+ files, ([\d]+) bytes total. Already (?:sent|received) [\d]+ files, ([\d]+) bytes total")
+
+    proc = subprocess.Popen([nodetool, "netstats"], stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if proc.returncode > 0:
+        raise subprocess.CalledProcessError(proc.returncode)
+
+    stats = []
+    for line in output.split('\n'):
+        match = peer_re.match(line)
+        if match:
+            peer = match.group(1)
+            continue
+        match = xfer_re.match(line)
+        if match:
+            (direction, total, current) = match.groups()
+            direction = "=>" if direction == "Sending" else "<="
+            stats.append((direction, resolve(peer), int(current), int(total)))
+    return stats
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Cassandra streams monitor")
+    parser.add_argument("-nt", "--nodetool", metavar="CMD", default="nodetool-a",
+                        help="Nodetool command to use")
+    return parser.parse_args(sys.argv[1:])
+
+
+def main():
+    samples = {}
+    tstamp = time.time()
+    args = parse_args()
+
+    while True:
+        stats = netstats(args.nodetool)
+        clear()
+        header()
+        for (direction, peer, current, total) in stats:
+            if peer in samples:
+                samples[peer].append(current)
+
+                def sample_diffs():
+                    res = []
+                    previous = None
+                    for s in samples[peer]:
+                        if previous:
+                            res.append(s - previous)
+                        previous = s
+                    return res
+
+                diffs = sample_diffs()
+                average = sum(diffs) / len(diffs)
+                rate = average / (time.time() - tstamp)
+                remaining = total - current
+                eta = (remaining / rate) if rate > 0 else -1
+                percent = remaining / float(total)
+            else:
+                samples[peer] = collections.deque(maxlen=20)
+                samples[peer].append(current)
+                rate = -1
+                remaining = -1
+                eta = -1
+                percent = -1
+
+            paint((direction, peer, sizeof_format(total), sizeof_format(remaining),
+                   percent_format(percent), sizeof_format(rate) + "/s", seconds_format(eta)))
+
+        tstamp = time.time()
+        time.sleep(3)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print
+        sys.exit(0)
