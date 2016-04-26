@@ -14,6 +14,7 @@ install:
 	install -m 755 c-ls $(BINDIR)
 	install -m 755 c-foreach-nt $(BINDIR)
 	install -m 755 c-cqlsh $(BINDIR)
+	install -m 755 streams $(BINDIR)/cassandra-streams
 	install -m 755 uyaml $(BINDIR)
 	install -m 644 functions $(SHAREDIR)
 
