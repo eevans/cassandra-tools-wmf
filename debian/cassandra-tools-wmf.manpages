@@ -1,0 +1,5 @@
+debian/cassandra-streams.1
+debian/c-foreach-nt.1
+debian/c-ls.1
+debian/uyaml.1
+debian/c-cqlsh.1
