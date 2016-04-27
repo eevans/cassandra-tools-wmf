@@ -5,7 +5,7 @@ Maintainer: Eric Evans <eevans@wikimedia.org>
 Build-Depends: debhelper (>=9)
 Standards-Version: 3.9.7
 Homepage: https://wikitech.wikimedia.org/wiki/Cassandra/Tools
-Vcs-Git: ssh://eevans@gerrit.wikimedia.org:29418/operations/software/cassandra-tools-wmf
+Vcs-Git: https://gerrit.wikimedia.org/r/operations/software/cassandra-tools-wmf
 Vcs-Browser: https://github.com/wikimedia/operations-software-cassandra-tools-wmf
 
 Package: cassandra-tools-wmf
