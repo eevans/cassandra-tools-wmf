@@ -2,7 +2,7 @@ Source: cassandra-tools-wmf
 Section: misc
 Priority: optional
 Maintainer: Eric Evans <eevans@wikimedia.org>
-Build-Depends: debhelper (>=9), dh-python
+Build-Depends: debhelper (>=9), python, dh-python
 Standards-Version: 3.9.7
 Homepage: https://wikitech.wikimedia.org/wiki/Cassandra/Tools
 Vcs-Git: https://gerrit.wikimedia.org/r/operations/software/cassandra-tools-wmf
@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/wikimedia/operations-software-cassandra-tools-wm
 
 Package: cassandra-tools-wmf
 Architecture: all
-Depends: python (>= 2.7), python-yaml (>= 3.11), ${misc:Depends}
+Depends: python-yaml (>= 3.11), ${misc:Depends}, ${python:Depends}
 Description: add-ons to make Wikimedia Cassandra operations easier
  Contains the following:
  .
