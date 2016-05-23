@@ -61,7 +61,9 @@ class Instance(object):
                 logging.info("CQL (%s:%s) is UP", self.rpc_address, self.native_transport_port)
                 listening = True
                 break
-            sleep(2)
+            elif i < 9:
+                logging.warn("CQL (%s:%s) not listening (will retry)...")
+            sleep(6)
         if not listening:
             logging.error("CQL (%s:%s) DOWN", self.rpc_address, self.native_transport_port)
             raise Exception("{} restart FAILED".format(self.service_name))
