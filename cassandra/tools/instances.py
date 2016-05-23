@@ -46,7 +46,7 @@ class Instance(object):
     Restart this Cassandra instance.
     """
     def restart(self):
-        self.__log_info("Shutting down client ports...")
+        self.__log_info("Disabling client ports...")
         self.nodetool.disablebinary()
         self.nodetool.disablethrift()
         self.__log_info("Draining...")
@@ -58,18 +58,28 @@ class Instance(object):
         for i in range(0, 10):
             logging.debug("Testing CQL port (attempt #%s)", (i + 1))
             if self.listening(self.rpc_address, self.native_transport_port):
-                logging.info("CQL (%s:%s) is UP", self.rpc_address, self.native_transport_port)
+                self.__log_info("CQL (%s:%s) is UP", self.rpc_address, self.native_transport_port)
                 listening = True
                 break
-            elif i < 9:
-                logging.warn("CQL (%s:%s) not listening (will retry)...")
+            elif (i % 2) == 0 and i < 9:
+                self.__log_warn(
+                    "CQL (%s:%s) not listening (will retry)...",
+                    self.rpc_address,
+                    self.native_transport_port
+                )
             sleep(6)
         if not listening:
-            logging.error("CQL (%s:%s) DOWN", self.rpc_address, self.native_transport_port)
+            self.__log_error("CQL (%s:%s) DOWN", self.rpc_address, self.native_transport_port)
             raise Exception("{} restart FAILED".format(self.service_name))
 
     def __log_info(self, msg, *args, **kwargs):
         self.__log(logging.INFO, msg, *args, **kwargs)
+
+    def __log_warn(self, msg, *args, **kwargs):
+        self.__log(logging.WARN, msg, *args, **kwargs)
+
+    def __log_error(self, msg, *args, **kwargs):
+        self.__log(logging.ERROR, msg, *args, **kwargs)
 
     def __log(self, level, msg, *args, **kwargs):
         logging.log(level, "[{}] {}".format(self.name, msg), *args, **kwargs)
