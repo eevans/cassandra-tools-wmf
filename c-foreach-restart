@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+
+import logging
+
+from cassandra.tools import get_instances
+from cassandra.tools.config import LOG_LEVEL
+
+logging.basicConfig(level=LOG_LEVEL)
+
+
+def main():
+    for instance in get_instances():
+        instance.restart()
+
+
+if __name__ == "__main__":
+    main()
