@@ -108,6 +108,10 @@ def main():
         clear()
         header()
         for (direction, peer, current, total) in stats:
+            rate = -1
+            remaining = -1
+            eta = -1
+            percent = -1
             if peer in samples:
                 samples[peer].append(current)
 
@@ -121,18 +125,15 @@ def main():
                     return res
 
                 diffs = sample_diffs()
-                average = sum(diffs) / len(diffs)
-                rate = average / (time.time() - tstamp)
-                remaining = total - current
-                eta = (remaining / rate) if rate > 0 else -1
-                percent = remaining / float(total)
+                if len(diffs) > 0:
+                    average = sum(diffs) / len(diffs)
+                    rate = average / (time.time() - tstamp)
+                    remaining = total - current
+                    eta = (remaining / rate) if rate > 0 else -1
+                    percent = remaining / float(total)
             else:
                 samples[peer] = collections.deque(maxlen=20)
                 samples[peer].append(current)
-                rate = -1
-                remaining = -1
-                eta = -1
-                percent = -1
 
             paint((direction, peer, sizeof_format(total), sizeof_format(remaining),
                    percent_format(percent), sizeof_format(rate) + "/s", seconds_format(eta)))
