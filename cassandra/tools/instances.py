@@ -14,7 +14,7 @@ from .nodetool import Nodetool
 
 
 def __get_descriptor_files():
-    for descr in os.listdir(DESCRIPTOR_DIR):
+    for descr in sorted(os.listdir(DESCRIPTOR_DIR)):
         if descr.endswith("yaml") or descr.endswith("yml"):
             yield os.path.join(DESCRIPTOR_DIR, descr)
 
