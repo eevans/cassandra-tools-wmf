@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+
+import random
+import sys
+
+from cassandra.tools import get_instances
+
+
+def main():
+    instance = random.choice(list(get_instances()))
+    instance.nodetool.run(*sys.argv[1:])
+
+
+if __name__ == "__main__":
+    main()

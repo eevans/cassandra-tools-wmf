@@ -14,7 +14,7 @@ from .nodetool import Nodetool
 
 
 def __get_descriptor_files():
-    for descr in os.listdir(DESCRIPTOR_DIR):
+    for descr in sorted(os.listdir(DESCRIPTOR_DIR)):
         if descr.endswith("yaml") or descr.endswith("yml"):
             yield os.path.join(DESCRIPTOR_DIR, descr)
 
@@ -47,10 +47,10 @@ class Instance(object):
     """
     def restart(self):
         self.__log_info("Disabling client ports...")
-        self.nodetool.disablebinary()
-        self.nodetool.disablethrift()
+        self.nodetool.run("disablebinary")
+        self.nodetool.run("disablethrift")
         self.__log_info("Draining...")
-        self.nodetool.drain()
+        self.nodetool.run("drain")
         self.__log_info("Restarting service %s", self.service_name)
         call("systemctl", "restart", self.service_name)
         listening = False
