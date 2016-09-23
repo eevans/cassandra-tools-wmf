@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 
+import argparse
 import logging
+import sys
 
 from cassandra.tools import get_instances
 from cassandra.tools.config import LOG_LEVEL
@@ -9,10 +11,19 @@ from cassandra.tools.config import LOG_LEVEL
 logging.basicConfig(level=LOG_LEVEL)
 
 
-def main():
+def main(retries, delay):
     for instance in get_instances():
-        instance.restart()
+        instance.restart(retries=retries, delay=delay)
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Cassandra instance restarter")
+    parser.add_argument("-r", "--retries", metavar="RETRIES", default=10, type=int,
+                        help="Maximum number of times to check if service is up.")
+    parser.add_argument("-d", "--delay", metavar="DELAY", default=6, type=int,
+                        help="Number seconds between connection attempts, in seconds.")
+    return parser.parse_args(sys.argv[1:])
 
 
 if __name__ == "__main__":
-    main()
+    args = parse_args()
+    main(args.retries, args.delay)

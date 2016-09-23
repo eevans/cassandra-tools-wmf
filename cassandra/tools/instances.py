@@ -45,7 +45,8 @@ class Instance(object):
     """
     Restart this Cassandra instance.
     """
-    def restart(self):
+    def restart(self, retries=10, delay=6):
+        self.__log_debug("Restarting instance... (retries=%s, delay=%s)", retries, delay)
         self.__log_info("Disabling client ports...")
         self.nodetool.run("disablebinary")
         self.nodetool.run("disablethrift")
@@ -54,8 +55,7 @@ class Instance(object):
         self.__log_info("Restarting service %s", self.service_name)
         call("systemctl", "restart", self.service_name)
         listening = False
-        # TODO: The number of retries and timeout used should be configurable
-        for i in range(0, 10):
+        for i in range(0, retries):
             logging.debug("Testing CQL port (attempt #%s)", (i + 1))
             if self.listening(self.rpc_address, self.native_transport_port):
                 self.__log_info("CQL (%s:%s) is UP", self.rpc_address, self.native_transport_port)
@@ -67,10 +67,13 @@ class Instance(object):
                     self.rpc_address,
                     self.native_transport_port
                 )
-            sleep(6)
+            sleep(delay)
         if not listening:
             self.__log_error("CQL (%s:%s) DOWN", self.rpc_address, self.native_transport_port)
             raise Exception("{} restart FAILED".format(self.service_name))
+
+    def __log_debug(self, msg, *args, **kwargs):
+        self.__log(logging.DEBUG, msg, *args, **kwargs)
 
     def __log_info(self, msg, *args, **kwargs):
         self.__log(logging.INFO, msg, *args, **kwargs)
