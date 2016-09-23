@@ -1,7 +1,4 @@
 
-
-import logging
-
 from .commands import call
 
 
@@ -10,9 +7,9 @@ class Nodetool(object):
         self.host = host
         self.port = str(port)
 
-    def run(self, *args):
+    def run(self, *args, **kwargs):
         command = ["nodetool", "--host", self.host, "--port", self.port] + list(args)
-        retcode = call(*command)
+        retcode = call(*command, color=kwargs.get("color"))
         if retcode != 0:
             raise NodetoolCmdException("nodetool returned status {}".format(retcode))
 
