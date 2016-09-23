@@ -4,9 +4,8 @@ from contextlib import closing
 import logging
 import os
 import socket
+from   time    import sleep
 import yaml
-
-from time      import sleep
 
 from .commands import call
 from .config   import DESCRIPTOR_DIR
@@ -52,8 +51,22 @@ class Instance(object):
         self.nodetool.run("disablethrift")
         self.__log_info("Draining...")
         self.nodetool.run("drain")
+
+        # Restart Cassandra
         self.__log_info("Restarting service %s", self.service_name)
-        call("systemctl", "restart", self.service_name)
+        (retcode, stdout, stderr) = call("systemctl", "restart", self.service_name)
+        if retcode != 0:
+            self.__log_error("systemctl returned exit code %s", retcode)
+            stdout = stdout.rstrip()
+            stderr = stderr.rstrip()
+            if stdout:
+                for line in stdout.splitlines():
+                    self.__log_error(line)
+            if stderr:
+                for line in stderr.splitlines():
+                    self.__log_error(line)
+
+        # Wait for Cassandra to come back up before continuing
         listening = False
         for i in range(0, retries):
             logging.debug("Testing CQL port (attempt #%s)", (i + 1))

@@ -1,43 +1,25 @@
-#!/bin/bash
-
-set -e
-
-# If we're running from an uninstalled working-copy, then use the working-copy
-# version of the shell include, otherwise assume it is installed.
-if [ -r `dirname $0`/functions ]; then
-    . `dirname $0`/functions
-else
-    . /usr/share/cassandra-tools-wmf/functions
-fi
+#!/usr/bin/python
 
 
-magenta() {
-    printf "\033[%sm%s\033[0m\n" "35" "$1"
-}
+import logging
+import sys
 
-cyan() {
-    printf "\033[%sm%s\033[0m\n" "36" "$1"
-}
+from cassandra.tools           import get_instances
+from cassandra.tools.config    import LOG_LEVEL
+from cassandra.tools.nodetool  import NodetoolOutputWriter
+from cassandra.tools.output    import MAGENTA, CYAN
 
-COUNT=0
 
-# Prepends the supplied instance ID to each line of stdin.
-prepend_instance_id() {
-    while read line; do
-        if test $(($COUNT % 2)) = 0; then
-            magenta "$1: $line"
-        else
-            cyan "$1: $line"
-        fi
-    done
-}
+logging.basicConfig(level=LOG_LEVEL)
 
-for i in `instances`; do
-    nodetool-$i "$@" | prepend_instance_id $i
-    COUNT=$(($COUNT+1))
-done
 
-# Kludge for hosts not yet converted to multi-instance
-if test $COUNT -le 1; then
-    nodetool "$@"
-fi
+def main():
+    for (i, instance) in enumerate(get_instances()):
+        color = MAGENTA if (i % 2) == 0 else CYAN
+        instance.nodetool.run(
+            *sys.argv[1:],
+            output=NodetoolOutputWriter(color, False, instance.name))
+
+
+if __name__ == "__main__":
+    main()
