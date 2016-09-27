@@ -44,7 +44,7 @@ class Instance(object):
     """
     Restart this Cassandra instance.
     """
-    def restart(self, retries=10, delay=6):
+    def restart(self, retries=10, delay=6, post_shutdown=None):
         self.__log_debug("Restarting instance... (retries=%s, delay=%s)", retries, delay)
         self.__log_info("Disabling client ports...")
         self.nodetool.run("disablebinary")
@@ -52,19 +52,28 @@ class Instance(object):
         self.__log_info("Draining...")
         self.nodetool.run("drain")
 
-        # Restart Cassandra
-        self.__log_info("Restarting service %s", self.service_name)
-        (retcode, stdout, stderr) = call("systemctl", "restart", self.service_name)
-        if retcode != 0:
-            self.__log_error("systemctl returned exit code %s", retcode)
+        def exec_command(*args):
+            (retcode, stdout, stderr) = call(*args)
             stdout = stdout.rstrip()
             stderr = stderr.rstrip()
             if stdout:
                 for line in stdout.splitlines():
-                    self.__log_error(line)
+                    self.__log_info(line)
             if stderr:
                 for line in stderr.splitlines():
                     self.__log_error(line)
+            if retcode != 0:
+                self.__log_error("%s returned exit code %s", args[0], retcode)
+                raise RuntimeError("{} returned exit code {}".format(args[0], retcode))
+
+        # Restart Cassandra
+        self.__log_info("Stopping service %s", self.service_name)
+        exec_command("systemctl", "stop", self.service_name)
+        if post_shutdown:
+            self.__log_info("Executing post-shutdown command: %s", post_shutdown)
+            exec_command(*(post_shutdown.strip().split()))
+        self.__log_info("Starting service %s", self.service_name)
+        exec_command("systemctl", "start", self.service_name)
 
         # Wait for Cassandra to come back up before continuing
         listening = False
