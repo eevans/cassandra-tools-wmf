@@ -8,7 +8,7 @@ import sys
 from cassandra.tools import get_instances
 from cassandra.tools.config import LOG_LEVEL
 
-logging.basicConfig(level=LOG_LEVEL)
+logging.basicConfig(level=LOG_LEVEL, format="%(asctime)s %(levelname)-8s %(message)s")
 
 
 def main(retries, delay, post_shutdown):
