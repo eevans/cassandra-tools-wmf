@@ -11,9 +11,9 @@ from cassandra.tools.config import LOG_LEVEL
 logging.basicConfig(level=LOG_LEVEL)
 
 
-def main(retries, delay):
+def main(retries, delay, post_shutdown):
     for instance in get_instances():
-        instance.restart(retries=retries, delay=delay)
+        instance.restart(retries=retries, delay=delay, post_shutdown=post_shutdown)
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Cassandra instance restarter")
@@ -21,9 +21,12 @@ def parse_args():
                         help="Maximum number of times to check if service is up.")
     parser.add_argument("-d", "--delay", metavar="DELAY", default=6, type=int,
                         help="Number seconds between connection attempts, in seconds.")
+    parser.add_argument("--execute-post-shutdown", metavar="CMD", type=str,
+                        help="Command to execute after Cassandra has been shutdown, and before it "
+                        "is started back up.")
     return parser.parse_args(sys.argv[1:])
 
 
 if __name__ == "__main__":
     args = parse_args()
-    main(args.retries, args.delay)
+    main(args.retries, args.delay, args.execute_post_shutdown)

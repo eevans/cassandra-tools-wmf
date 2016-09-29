@@ -4,23 +4,32 @@
 import logging
 import sys
 
-from cassandra.tools import get_instances
-from cassandra.tools.commands import magenta, cyan, red
-from cassandra.tools.nodetool import NodetoolCmdException
-from cassandra.tools.config import LOG_LEVEL
+from cassandra.tools           import get_instances
+from cassandra.tools.config    import LOG_LEVEL
+from cassandra.tools.nodetool  import NodetoolOutputWriter
+from cassandra.tools.output    import MAGENTA, CYAN
 
 
 logging.basicConfig(level=LOG_LEVEL)
 
 
-def main():
+def main(args):
     for (i, instance) in enumerate(get_instances()):
-        color = magenta if (i % 2) == 0 else cyan
-        try:
-            instance.nodetool.run(*sys.argv[1:], color=color)
-        except NodetoolCmdException, err:
-            print >>sys.stderr, red(err, True)
+        color = MAGENTA if (i % 2) == 0 else CYAN
+        instance.nodetool.run(*args, output=NodetoolOutputWriter(color, False, instance.name))
+
+def usage(out):
+    print >>out, "Usage: {} <ARG> [ARG ...]\n".format(sys.argv[0])
+    print >>out, "Execute nodetool on each local Cassandra instance.\n"
+    print >>out, "Positional arguments:"
+    print >>out, "    ARG    Arguments to pass to nodetool\n"
+
+def get_args():
+    if len(sys.argv[1:]) < 1:
+        usage(sys.stderr)
+        sys.exit(1)
+    return sys.argv[1:]
 
 
 if __name__ == "__main__":
-    main()
+    main(get_args())
