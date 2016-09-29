@@ -1,45 +1,42 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-
-- [cassandra-tools-wmf](#cassandra-tools-wmf)
-  - [The tools](#the-tools)
-    - [c-cqlsh](#c-cqlsh)
-      - [Synopsis](#synopsis)
-      - [Description](#description)
-      - [Example](#example)
-    - [c-any-nt](#c-any-nt)
-      - [Synopsis](#synopsis-1)
-      - [Description](#description-1)
-      - [Example](#example-1)
-    - [c-foreach-nt](#c-foreach-nt)
-      - [Synopsis](#synopsis-2)
-      - [Description](#description-2)
-      - [Example](#example-2)
-    - [c-foreach-restart](#c-foreach-restart)
-      - [Synopsis](#synopsis-3)
-      - [Description](#description-3)
-      - [Example](#example-3)
-    - [c-ls](#c-ls)
-      - [Synopsis](#synopsis-4)
-      - [Description](#description-4)
-      - [Example](#example-4)
-    - [streams](#streams)
-      - [Synopsis](#synopsis-5)
-      - [Description](#description-5)
-      - [Example](#example-5)
-    - [uyaml](#uyaml)
-      - [Synopsis](#synopsis-6)
-      - [Description](#description-6)
-      - [Example](#example-6)
-  - [Building a Debian package](#building-a-debian-package)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 cassandra-tools-wmf
 ===================
 
 Cluster management tools for [Apache Cassandra](http://cassandra.apache.org).
+
+
+Table of contents
+-----------------
+- [The tools](#the-tools)
+  - [c-cqlsh](#c-cqlsh)
+    - [Synopsis](#synopsis)
+    - [Description](#description)
+    - [Example](#example)
+  - [c-any-nt](#c-any-nt)
+    - [Synopsis](#synopsis-1)
+    - [Description](#description-1)
+    - [Example](#example-1)
+  - [c-foreach-nt](#c-foreach-nt)
+    - [Synopsis](#synopsis-2)
+    - [Description](#description-2)
+    - [Example](#example-2)
+  - [c-foreach-restart](#c-foreach-restart)
+    - [Synopsis](#synopsis-3)
+    - [Description](#description-3)
+    - [Example](#example-3)
+  - [c-ls](#c-ls)
+    - [Synopsis](#synopsis-4)
+    - [Description](#description-4)
+    - [Example](#example-4)
+  - [streams](#streams)
+    - [Synopsis](#synopsis-5)
+    - [Description](#description-5)
+    - [Example](#example-5)
+  - [uyaml](#uyaml)
+    - [Synopsis](#synopsis-6)
+    - [Description](#description-6)
+    - [Example](#example-6)
+- [Building a Debian package](#building-a-debian-package)
+
 
 The tools
 ---------
