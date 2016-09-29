@@ -1,5 +1,5 @@
 cassandra-tools-wmf
-1;4592;0c===================
+===================
 
 Cluster management tools for [Apache Cassandra](http://cassandra.apache.org).
 
