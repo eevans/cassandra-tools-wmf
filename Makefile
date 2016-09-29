@@ -22,3 +22,15 @@ install:
 orig.tar.gz:
 	git archive --format=tar.gz --prefix=$(NAME)-$(VERSION)/ \
 	    -o ../$(NAME)_$(VERSION).orig.tar.gz HEAD
+
+lint:
+	# Run pylint; Fail if exit status means 'error' or 'fatal'
+	pylint --rcfile=.pylintrc cassandra; \
+	    echo "pylint returned exit code $$?"; \
+	    if [ "$$(($$? & 1))" != 0 ] || [ "$$(($$? & 2))" != 0 ]; then \
+	        false; \
+	    else \
+	        true; \
+		fi
+
+

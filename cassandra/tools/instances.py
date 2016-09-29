@@ -1,4 +1,8 @@
 
+"""
+Cassandra instances.
+"""
+
 from contextlib import closing
 
 import logging
