@@ -13,13 +13,23 @@ from cassandra.tools.output    import MAGENTA, CYAN
 logging.basicConfig(level=LOG_LEVEL)
 
 
-def main():
+def main(args):
     for (i, instance) in enumerate(get_instances()):
         color = MAGENTA if (i % 2) == 0 else CYAN
-        instance.nodetool.run(
-            *sys.argv[1:],
-            output=NodetoolOutputWriter(color, False, instance.name))
+        instance.nodetool.run(*args, output=NodetoolOutputWriter(color, False, instance.name))
+
+def usage(out):
+    print >>out, "Usage: {} <ARG> [ARG ...]\n".format(sys.argv[0])
+    print >>out, "Execute nodetool on each local Cassandra instance.\n"
+    print >>out, "Positional arguments:"
+    print >>out, "    ARG    Arguments to pass to nodetool\n"
+
+def get_args():
+    if len(sys.argv[1:]) < 1:
+        usage(sys.stderr)
+        sys.exit(1)
+    return sys.argv[1:]
 
 
 if __name__ == "__main__":
-    main()
+    main(get_args())
