@@ -32,5 +32,3 @@ lint:
 	    else \
 	        true; \
 	    fi
-
-
