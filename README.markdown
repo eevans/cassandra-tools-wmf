@@ -144,5 +144,5 @@ Building a Debian package
     $ git merge master
     $ # Update debian/changelog accordingly
     $ dpkg-buildpackage -rfakeroot # or alternately...
-    $ gbp buildpackage -rfakeroot -us -uc --git-upstream-branch=master --git-debian-branch=debian
+    $ gbp buildpackage -rfakeroot -us -uc
     
