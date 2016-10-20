@@ -4,3 +4,4 @@ debian/c-ls.1
 debian/uyaml.1
 debian/c-cqlsh.1
 debian/c-any-nt.1
+debian/c-foreach-restart.1

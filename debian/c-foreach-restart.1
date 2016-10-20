@@ -1,0 +1,51 @@
+.\" Hey, EMACS: -*- nroff -*-
+.\"
+.\" (C) Copyright 2016 Eric Evans <eevans@wikimedia.org>,
+.\"
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH C-FOREACH-RESTART 1 "October 20 2016"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+c-foreach-restart \- iteratively restart Cassandra instances
+.SH SYNOPSIS
+.B c-foreach-restart [OPTIONS]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B c-foreach-restart
+command.
+.PP
+\fBc-foreach-restart\fP iterates over any locally running Cassandra instances,
+draining and then restarting each in turn.
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+A summary of options is included below.
+.TP
+.B \-h, \-\-help
+Show summary of options.
+.TP
+.B \-a, \-\-attempts N
+The number of times to check if the service is up after a restart.
+.TP
+.B \-r, \-\-retry N
+Number of seconds to wait in between connection attempts.
+.TP
+.B \-\-execute-post-shutdown CMD
+Command to execute after Cassandra has been shutdown, and before it is started
+back up.
+.TP
+.B \-d, \-\-delay N
+Number of seconds to wait after a restart, before resuming execution.
