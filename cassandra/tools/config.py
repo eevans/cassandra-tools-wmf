@@ -1,4 +1,8 @@
 
+"""
+Configuration.
+"""
+
 import logging
 
 from os import environ

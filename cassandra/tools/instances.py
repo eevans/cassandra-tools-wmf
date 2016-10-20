@@ -1,4 +1,8 @@
 
+"""
+Cassandra instances.
+"""
+
 from contextlib import closing
 
 import logging
@@ -46,11 +50,11 @@ class Instance(object):
 
         self.nodetool = Nodetool(self.listen_address, self.jmx_port)
 
-    def restart(self, retries=10, delay=6, post_shutdown=None):
+    def restart(self, attempts=10, retry=6, post_shutdown=None):
         """
         Restarts this Cassandra instance.
         """
-        self.__log_debug("Restarting instance... (retries=%s, delay=%s)", retries, delay)
+        self.__log_debug("Restarting instance... (attempts=%s, retry=%s)", attempts, retry)
         self.__log_info("Disabling client ports...")
         self.nodetool.run("disablebinary")
         self.nodetool.run("disablethrift")
@@ -71,7 +75,7 @@ class Instance(object):
 
         # Wait for Cassandra to come back up before continuing
         listening = False
-        for i in range(0, retries):
+        for i in range(0, attempts):
             logging.debug("Testing CQL port (attempt #%s)", (i + 1))
             if self.listening(self.rpc_address, self.native_transport_port):
                 self.__log_info("CQL (%s:%s) is UP", self.rpc_address, self.native_transport_port)
@@ -82,7 +86,7 @@ class Instance(object):
                     "CQL (%s:%s) not listening (will retry)...",
                     self.rpc_address,
                     self.native_transport_port)
-            sleep(delay)
+            sleep(retry)
         if not listening:
             self.__log_error("CQL (%s:%s) DOWN", self.rpc_address, self.native_transport_port)
             raise Exception("{} restart FAILED".format(self.service_name))
