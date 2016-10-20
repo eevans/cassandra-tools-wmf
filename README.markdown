@@ -53,20 +53,25 @@ In a WMF multi-instance environment, iteratively execute nodetool on all local C
 
 ### c-foreach-restart
 #### Synopsis
-    c-foreach-restart [-h] [-r RETRIES] [-d DELAY] [--execute-post-shutdown CMD]
+    usage: c-foreach-restart [-h] [-a ATTEMPTS] [-r RETRY]
+                             [--execute-post-shutdown CMD] [-d DELAY]
     
-    Cassandra instance restarter.
+    Cassandra instance restarter
     
     optional arguments:
       -h, --help            show this help message and exit
-      -r RETRIES, --retries RETRIES
-                            Maximum number of times to check if service is up.
-      -d DELAY, --delay DELAY
+      -a ATTEMPTS, --attempts ATTEMPTS
+                            Maximum number of times to check if service is up
+                            after restarting.
+      -r RETRY, --retry RETRY
                             Number seconds between connection attempts, in
                             seconds.
       --execute-post-shutdown CMD
                             Command to execute after Cassandra has been shutdown,
                             and before it is started back up.
+      -d DELAY, --delay DELAY
+                            Delay between instance restarts (defaults to no
+                            delay).
     
 #### Description
 In a WMF multi-instance environment, iteratively restart instances.
