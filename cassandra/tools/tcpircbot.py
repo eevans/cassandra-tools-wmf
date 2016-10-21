@@ -1,5 +1,6 @@
 
 
+import getpass
 import logging
 import socket
 
@@ -19,11 +20,17 @@ class IrcBot(object):
             sock.connect((self.host, self.port))
             sock.sendall(IrcBot.format_message(msg, *args, **kwargs))
         except (socket.timeout, socket.error, socket.gaierror), err:
-            logging.error("Unable to send to logmsgbot (SAL): %s", err.message)
+            logging.error(
+                "Unable to send to logmsgbot (SAL): socket.error (%s) %s",
+                err.errno,
+                err.strerror
+            )
         finally:
             if sock:
                 sock.close()
 
     @classmethod
     def format_message(cls, msg, *args, **kwargs):
-        return "!log " + msg.format(*args, **kwargs)
+        username = getpass.getuser()
+        hostname = socket.gethostbyaddr(socket.gethostname())[0]
+        return "!log {}@{}: ".format(username, hostname) + msg.format(*args, **kwargs)
