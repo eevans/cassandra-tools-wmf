@@ -42,9 +42,9 @@ def parse_args():
                         help="Delay between instance restarts (defaults to no delay).")
     parser.add_argument("--logmsgbot", action="store_true",
                         help="Log restarts to SAL (via logmsgbot and #wikimedia-operations).")
-    parser.add_argument("--tcpircbot-host", default="neon.wikimedia.org", metavar="HOST",
+    parser.add_argument("--tcpircbot-host", default="einsteinium.wikimedia.org", metavar="HOST",
                         help="tcpircbot hostname. Only valid when --logmsgbot is used. "
-                        "Default: neon.wikimedia.org")
+                        "Default: einsteinium.wikimedia.org")
     parser.add_argument("--tcpircbot-port", metavar="PORT", type=int, default=9200,
                         help="tcpircbot port number. Only valid when --logmsgbot is used. "
                         "Default: 9200")
