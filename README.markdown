@@ -79,7 +79,7 @@ In a WMF multi-instance environment, iteratively execute nodetool on all local C
                             operations).
       --tcpircbot-host HOST
                             tcpircbot hostname. Only valid when --logmsgbot is
-                            used. Default: neon.wikimedia.org
+                            used. Default: einsteinium.wikimedia.org
       --tcpircbot-port PORT
                             tcpircbot port number. Only valid when --logmsgbot is
                             used. Default: 9200
