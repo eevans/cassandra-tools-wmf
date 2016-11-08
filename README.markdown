@@ -55,6 +55,8 @@ In a WMF multi-instance environment, iteratively execute nodetool on all local C
 #### Synopsis
     usage: c-foreach-restart [-h] [-a ATTEMPTS] [-r RETRY]
                              [--execute-post-shutdown CMD] [-d DELAY]
+                             [--logmsgbot LOGMSGBOT] [--tcpircbot-host HOST]
+                             [--tcpircbot-port PORT] [--phabricator-issue ISSUE]
     
     Cassandra instance restarter
     
@@ -72,7 +74,22 @@ In a WMF multi-instance environment, iteratively execute nodetool on all local C
       -d DELAY, --delay DELAY
                             Delay between instance restarts (defaults to no
                             delay).
-    
+      --logmsgbot LOGMSGBOT
+                            Log restarts to SAL (via logmsgbot and #wikimedia-
+                            operations).
+      --tcpircbot-host HOST
+                            tcpircbot hostname. Only valid when --logmsgbot is
+                            used. Default: neon.wikimedia.org
+      --tcpircbot-port PORT
+                            tcpircbot port number. Only valid when --logmsgbot is
+                            used. Default: 9200
+      --phabricator-issue ISSUE
+                            Phabricator issue to associate these restarts with.
+                            This currently only makes sense in combination with
+                            --logmsgbot where it is included in the formatted log
+                            message.
+
+
 #### Description
 In a WMF multi-instance environment, iteratively restart instances.
 

@@ -12,8 +12,8 @@ from   subprocess import Popen, PIPE
 from   time       import sleep
 import yaml
 
-from .config   import DESCRIPTOR_DIR
-from .nodetool import Nodetool
+from .config    import DESCRIPTOR_DIR
+from .nodetool  import Nodetool
 
 
 def __get_descriptor_files():
