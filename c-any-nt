@@ -3,6 +3,7 @@
 
 import random
 import sys
+sys.path.append("/usr/share/cassandra-tools-wmf")
 
 from cassandra.tools import get_instances
 

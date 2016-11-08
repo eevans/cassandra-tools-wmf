@@ -5,6 +5,7 @@ import argparse
 import logging
 import sys
 import time
+sys.path.append("/usr/share/cassandra-tools-wmf")
 
 from cassandra.tools           import get_instances
 from cassandra.tools.config    import LOG_LEVEL
