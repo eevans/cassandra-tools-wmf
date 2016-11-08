@@ -3,6 +3,7 @@
 
 import logging
 import sys
+sys.path.append("/usr/share/cassandra-tools-wmf")
 
 from cassandra.tools           import get_instances
 from cassandra.tools.config    import LOG_LEVEL
