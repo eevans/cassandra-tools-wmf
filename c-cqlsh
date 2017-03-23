@@ -14,4 +14,16 @@ ID="$1"
 assert_instance_exists "$ID"
 shift 1
 
-sudo cqlsh --cqlshrc="`config_directory $ID`"/cqlshrc `listen_hostname $ID` "$@"
+CONFDIR=`config_directory $ID`
+
+use_ssl()
+{
+    enabled=`uyaml $CONFDIR/cassandra.yaml /client_encryption_options/enabled`
+    optional=`uyaml $CONFDIR/cassandra.yaml /client_encryption_options/optional`
+    if test $enabled -gt 0 -a $optional -lt 1; then
+        echo "--ssl"
+    fi
+}
+
+
+sudo cqlsh --cqlshrc="$CONFDIR"/cqlshrc `use_ssl` `listen_hostname $ID` "$@"
