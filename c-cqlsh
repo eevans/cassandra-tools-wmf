@@ -15,6 +15,7 @@ assert_instance_exists "$ID"
 shift 1
 
 CONFDIR=`config_directory $ID`
+CQLSHRC=${CQLSHRC:-"$CONFDIR"/cqlshrc}
 
 use_ssl()
 {
@@ -26,4 +27,4 @@ use_ssl()
 }
 
 
-sudo cqlsh --cqlshrc="$CONFDIR"/cqlshrc `use_ssl` `listen_hostname $ID` "$@"
+sudo cqlsh --cqlshrc="$CQLSHRC" `use_ssl` `listen_hostname $ID` "$@"
